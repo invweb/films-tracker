@@ -1,0 +1,58 @@
+package com.films.shared.ui
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.films.shared.api.FilmsApi
+import com.films.shared.model.Movie
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchScreen(api: FilmsApi, onMovieClick: (Int) -> Unit) {
+    var query by remember { mutableStateOf("") }
+    var results by remember { mutableStateOf(emptyList<Movie>()) }
+    var trending by remember { mutableStateOf(emptyList<Movie>()) }
+    var loading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        trending = api.trending()
+    }
+
+    LaunchedEffect(query) {
+        if (query.length >= 2) {
+            loading = true
+            results = api.search(query)
+            loading = false
+        } else {
+            results = emptyList()
+        }
+    }
+
+    val movies = if (query.length >= 2) results else trending
+    val label = if (query.length >= 2) "Results" else "Trending Now"
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("Search Movies", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextWhite)
+        Spacer(modifier = Modifier.height(16.dp))
+        SearchBar(query = query, onQueryChange = { query = it })
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "$label ${if (loading) "..." else ""}",
+            color = Muted, fontSize = 13.sp,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+        MovieGrid(movies = movies) { onMovieClick(it.id) }
+    }
+}

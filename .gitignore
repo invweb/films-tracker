@@ -7,3 +7,9 @@ data/
 .expo/
 .web/
 *.log
+
+# Gradle
+.gradle/
+build/
+local.properties
+*.hprof
