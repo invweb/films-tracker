@@ -6,64 +6,72 @@ A web app for tracking movies you want to watch, with recommendations, ratings, 
 ![Movie Detail](screenshots/movie-detail.png)
 ![Premieres](screenshots/calendar.png)
 
+## Features
+
+- **Search** 50+ classic and trending movies (fully local database)
+- **Trending** — top-rated films sorted by IMDB rating
+- **Three lists** — Watchlist, Watched, Favorites
+- **Ratings** (1–10), notes, tags
+- **Upcoming premieres** — Blade (2025), Mission Impossible 8, Deadpool & Wolverine, Dune: Part Two
+- **Recommendations** — based on your watch history and genre preferences
+- **Export** lists to CSV
+- **Detailed movie pages** — description, cast, similar movies, genres
+- **Dark theme** UI
+
 ## Tech Stack
 
 - **Frontend**: React + Vite + TypeScript
 - **Backend**: Node.js + Express + SQLite (sql.js)
-- **Movie Data**: OMDb API (Open Movie Database)
-
-## Features
-
-- Search movies via OMDb
-- Trending movies
-- Three lists: Watchlist, Watched, Favorites
-- Ratings (1–10), notes, tags
-- Upcoming premieres calendar (including Blade 2025)
-- Movie recommendations based on watch history
-- Export lists to CSV
-- Detailed movie pages (description, cast, similar movies)
-- Dark theme UI
+- **Movie Data**: Local database (50+ films) + optional OMDb API
 
 ## Quick Start
 
-### Backend
-
 ```bash
-cd server
-npm install
-cp .env.example .env   # add your OMDb API key
-npm run dev
+# Backend
+cd server && npm install && npm run dev
+
+# Web client (in separate terminal)
+cd web && npm install && npm run dev
 ```
 
-Server runs at `http://localhost:3001`
+Open **http://localhost:5173**
 
-### Web Client
+> The app works out of the box with a built-in local movie database. No API key required for basic functionality.
 
-```bash
-cd web
-npm install
-npm run dev
-```
+## Optional: OMDb API Key
 
-Open `http://localhost:5173`
+For extended search (access to 500K+ movies), you can add an OMDb API key:
 
-## OMDb API Key
-
-1. Go to http://www.omdbapi.com/apikey.aspx
+1. Go to **http://www.omdbapi.com/apikey.aspx**
 2. Select **FREE** and enter your email
 3. Receive key via email
-4. Add to `server/.env` → `OMDB_API_KEY`
+4. Add to `server/.env`:
+   ```
+   OMDB_API_KEY=your_key_here
+   ```
+5. Restart the server
 
-> Without a key, the app runs in demo mode with built-in sample movies.
+> Without the key, the app uses the local database of 50+ curated films — search, trending, recommendations, and premieres all work offline.
 
 ## Project Structure
 
 ```
 Films/
-├── server/          # Express API + SQLite
-├── web/             # React + Vite web client
-├── mobile/          # React Native + Expo (mobile app)
-├── screenshots/     # App screenshots
+├── server/              # Express API + SQLite + local movie DB
+│   ├── src/
+│   │   ├── db.ts        # SQLite database
+│   │   ├── local-movies.ts  # 50+ curated movies with full metadata
+│   │   ├── routes/
+│   │   │   ├── movies.ts    # User lists CRUD
+│   │   │   └── tmdb.ts     # Movie search & details
+│   │   └── index.ts
+│   └── .env.example
+├── web/                 # React + Vite web client
+│   └── src/
+│       ├── pages/       # Search, Lists, Calendar, Recommendations, Movie Detail
+│       └── services/    # API client
+├── mobile/              # React Native + Expo (mobile app)
+├── screenshots/         # App screenshots
 └── README.md
 ```
 
