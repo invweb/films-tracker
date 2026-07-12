@@ -1,4 +1,4 @@
-import { sendPushToAll } from '../routes/notifications';
+import { sendPushToAll } from './routes/notifications';
 import { all } from './db-helper';
 
 const CHECK_INTERVAL = 60 * 60 * 1000;
