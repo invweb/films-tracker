@@ -79,7 +79,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build Desktop
-        run: ./gradlew :desktop:compileKotlin
+        run: ./gradlew :desktop:compileKotlinDesktop
 
       - name: Build Android
         run: ./gradlew :android:compileDebugKotlin
